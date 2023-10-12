@@ -1,74 +1,142 @@
 #include "menu.h"
+/**
+ *  @author Philippe SIMIER
+ *  @abstract Class pour créer un menu
+ *  @date 11 septembre 2020
+ */
 
-Menu::Menu(const string &_nom):nom(_nom), longueurMax(0)
+using namespace std;
+
+/**
+ * @brief Menu::Menu (Constructeur)
+ * @param _nom nom du fichier contenant les items du menu
+ */
+
+Menu::Menu(const string &_nom):
+    nom(_nom),
+    longueurMax(0),
+    nbOptions(0),
+    options(nullptr)
 {
-    // ouvrir le fichier -> Création du flux en lecture
-    ifstream leFichier(nom.c_str());
-    // Si il y a une erreur
-    if(!leFichier.is_open())
-    {
-        // alors Afficher un message indiquant une erreur de lecture
-        cerr << "Erreur lors de l'ouverture du fichier" << endl;
-        // et mettre nbOptions à 0
-        nbOptions = 0;
+    ifstream fichierMenu(nom);
+    if (fichierMenu.fail()){
+
+        throw (std::runtime_error("Erreur d'ouverture du fichier"));
+
     }
-    else
-    {
-        // Sinon calculer nbOptions, le nombre d’options dans le fichier
-        nbOptions = static_cast<int>(count(istreambuf_iterator<char>(leFichier),
-                                           istreambuf_iterator<char>(),'\n'));
-        leFichier.seekg(0,ios::beg);
-        // allouer dynamiquement le tableau options en fonction de nbOptions
+    else{
+
+        nbOptions = static_cast<int>(count(istreambuf_iterator<char>(fichierMenu),
+                                           istreambuf_iterator<char>(),
+                                           '\n'));
+        fichierMenu.seekg(0,ios::beg);
+
+        int longueur;
+        string item;
+        // allocation dynamique du tableaux création du tableau
         options = new string[nbOptions];
-        // Pour chaque option dans le fichier
-        for(int i = 0; i < nbOptions; i++)
-        {
-            // Lire l’option et l’affecter dans le tableau options
-            getline(leFichier, options[i]);
-            // Si la taille de l’option est plus grande que longueurMax
-            if(options[i].length() > longueurMax)
-            {
-                // alors longueurMax reçoit la taille de l’option
-                longueurMax = options[i].length();
-            } // FinSi
-        } // FinPour
-    } // FinSi
+        // Lecture et chargement des items
+        for( int i = 0; i < nbOptions ; i++){
+            getline(fichierMenu, item);
+            longueur = static_cast<int>(item.length());
+            if (longueur > longueurMax)
+                longueurMax = longueur;
+            if (longueur > 0)            // si la ligne n'est pas vide
+                options[i] = item;      // On l'ajoute au tableau
+            else{                        // sinon on retire 1 du nb d'options
+                nbOptions--;
+                i--;
+            }
+        }
+
+    }
 }
+
+/**
+ * @brief Menu::~Menu (Destructeur)
+ */
 
 Menu::~Menu()
 {
-    delete [] options;
+    if (options != nullptr)
+        delete  [] options;
 }
+
+/**
+ * @brief Menu::Afficher
+ * @details Affiche le menu sur la console
+ * @return int le code de l'item sélectionné
+ */
 
 int Menu::Afficher()
 {
     int choix;
-    // Première ligne
-    cout << "+" << setfill('-') << setw(4) << right << "+" << setw(23) << "+" << endl;
-    // Lignes données
-    for(int i = 0; i < nbOptions; i++)
-    {
-        cout << "| " << setw(2) << setfill(' ') << left << i+1  << setw(2) << "|" << setw(21)
-             << options[i] << setw(2) << "|" << endl;
-    }
-    // Dernière ligne
-    cout << "+" << setfill('-') << setw(4) << right << "+" << setw(23) << "+" << endl;
-    // Test + entrée du choix
-    cout << "\nEntrez un nombre entre 1 et " << nbOptions << " : ";
-    if(!(cin>>choix))
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    // si le fichier ne peut pas être ouvert alors pas d'affichage;
+    if (nbOptions == 0)
         choix = -1;
+    else{
+        cout << setfill('-');
+        // dessine la première ligne du menu
+        cout << "+-" << setw(4) << "-+-" << setw(longueurMax+2) << "-+" << endl;
+        cout << setfill(' ');
+        for( int i =0; i < nbOptions; i++){
+            cout << "| " << i+1 << " | " << setw(longueurMax) << options[i]  << " |" << endl;
+        }
+        // dessine la dernière ligne
+        std::cout << setfill('-');
+        cout << "+-" << setw(4) << "-+-" << setw(longueurMax+2) << "-+" << endl;
+        cout << setfill(' ');
+
+        do{
+            cout << "Votre choix entre 1 et " << nbOptions << " : ";
+            if(!(cin>>choix))
+            {
+                cin. clear();
+                cin.ignore(std::numeric_limits<streamsize>::max(),'\n');
+                choix = -1;
+            }
+
+        }while (  choix > nbOptions);
+
     }
+
     return choix;
 }
 
+/**
+ * @brief Menu::AttendreAppuiTouche
+ * @abstract Méthode statique pour attendre l'appui sur une touche du clavier.
+ *           Le buffer d'entrée est vidé, l'écran est effacé après l'action sur le clavier
+ */
+
 void Menu::AttendreAppuiTouche()
 {
-    string chaine;
-    cout << endl << "appuyer sur la touche Entrée pour continuer...";
-    getline(cin,chaine);
+    string uneChaine;
+    cout << endl << "Appuyer sur la touche Entrée pour continuer ...";
+    getline(cin,uneChaine);
+    // Vidage du tampon d'entrée
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+#ifdef __linux__
     system("clear");
+#elif _WIN32
+    system("cls");
+#else
+
+#endif
+}
+
+Exception::Exception(int _code, string _message):
+    code(_code),
+    message(_message)
+{}
+
+int Exception::ObtenirCodeErreur() const
+{
+    return code;
+}
+
+string Exception::ObtenirMessage() const
+{
+    return message;
 }

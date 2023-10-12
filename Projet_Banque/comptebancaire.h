@@ -7,6 +7,7 @@
 class CompteBancaire
 {
 protected:
+    /// Le solde du compte bancaire
     float solde;
 public:
     CompteBancaire(const float _solde = 0);

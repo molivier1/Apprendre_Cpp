@@ -1,36 +1,46 @@
 #ifndef MENU_H
 #define MENU_H
-
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+
 
 using namespace std;
 
 class Menu
 {
-private:
-    string nom;
-    string *options;
-    int nbOptions;
-    size_t longueurMax;
-
 public:
-    Menu(const string &_nom); // Constructeur -> const "type" _"varName"
-    ~Menu(); // Destructeur
+    Menu(const string &_nom);
+    ~Menu();
     int Afficher();
     static void AttendreAppuiTouche();
+
+private:
+    /// Nom du fichier à ouvrir pour créer le menu
+    string nom;
+    /// La plus grande longueur d'un item
+    int longueurMax;
+    /// Nombre d'items du menu
+    int nbOptions;
+    /// Pointeur sur tableau des items
+    string *options;
+
+
+
 };
 
-enum CHOIX_MENU
+class Exception
 {
-    OPTION_1 = 1,
-    OPTION_2,
-    OPTION_3,
-    OPTION_4,
-    QUITTER
+public:
+    Exception(int _code, string _message);
+    int ObtenirCodeErreur() const;
+    string ObtenirMessage() const;
+
+private:
+    int code;
+    string message;
 };
 
 #endif // MENU_H
