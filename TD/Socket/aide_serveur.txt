@@ -1,0 +1,196 @@
+#ifndef AUDITSERVEURMONOWIDGET_H
+#define AUDITSERVEURMONOWIDGET_H
+
+#include <QWidget>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QNetworkInterface>
+#include <QProcess>
+#include <QHostInfo>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class AuditServeurMonoWidget; }
+QT_END_NAMESPACE
+
+class AuditServeurMonoWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    AuditServeurMonoWidget(QWidget *parent = nullptr);
+    ~AuditServeurMonoWidget();
+
+private slots:
+    void on_pushButtonLancementServeur_clicked();
+
+    void onQTcpServer_acceptError(QAbstractSocket::SocketError socketError);
+    void onQTcpServer_newConnection();
+
+    void onQTcpSocket_Connected();
+    void onQTcpSocket_Disconnected();
+    void onQTcpSocket_ReadyRead();
+    void onQTcpSocket_ErrorOccured(QAbstractSocket::SocketError socketError);
+    void onQTcpSocket_HostFound();
+    void onQTcpSocket_StateChanged(QAbstractSocket::SocketState socketState);
+    void onQTcpSocket_AboutToClose();
+    void onQTcpSocket_BytesWritten(qint64 bytes);
+
+    void onQProcess_readyReadStandardOutput();
+
+
+private:
+    Ui::AuditServeurMonoWidget *ui;
+    QTcpServer * socketEcouteServeur;
+    QTcpSocket * socketDialogueClient;
+    QProcess   * process;
+
+};
+#endif // AUDITSERVEURMONOWIDGET_H
+
+
+---------------------------------
+
+#include "auditserveurmonowidget.h"
+#include "ui_auditserveurmonowidget.h"
+
+AuditServeurMonoWidget::AuditServeurMonoWidget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::AuditServeurMonoWidget)
+    , socketDialogueClient(nullptr)
+{
+    ui->setupUi(this);
+    socketEcouteServeur = new QTcpServer(this);
+    socketEcouteServeur->setMaxPendingConnections(1);
+    connect(socketEcouteServeur,&QTcpServer::newConnection,this,&AuditServeurMonoWidget::onQTcpServer_newConnection);
+    connect(socketEcouteServeur,&QTcpServer::acceptError,this,&AuditServeurMonoWidget::onQTcpServer_acceptError);
+
+
+    process = new QProcess(this);
+    connect(process,&QProcess::readyReadStandardOutput,this,&AuditServeurMonoWidget::onQProcess_readyReadStandardOutput);
+}
+
+AuditServeurMonoWidget::~AuditServeurMonoWidget()
+{
+    if(socketDialogueClient != nullptr)
+    {
+        socketDialogueClient->close();
+        delete socketDialogueClient;
+    }
+    delete socketEcouteServeur;
+    delete ui;
+}
+
+
+void AuditServeurMonoWidget::on_pushButtonLancementServeur_clicked()
+{
+    if(!socketEcouteServeur->listen(QHostAddress::Any,ui->spinBoxPort->value()))
+    {
+        QString message = "Impossible de démarrer le serveur " + socketEcouteServeur->errorString();
+        ui->textEditLogs->append(message);
+    }
+    else
+    {
+        QList<QHostAddress> listeAdresses = QNetworkInterface::allAddresses();
+        QList<QHostAddress>::iterator it;
+        for(it = listeAdresses.begin(); it != listeAdresses.end();it++)
+        {
+            if(it->toIPv4Address())
+                ui->textEditLogs->append("Adresse serveur : " + it->toString());
+        }
+        ui->textEditLogs->append("N° du port : " + QString::number(socketEcouteServeur->serverPort()));
+        ui->pushButtonLancementServeur->setEnabled(false);
+        ui->spinBoxPort->setEnabled(false);
+    }
+}
+
+void AuditServeurMonoWidget::onQTcpServer_acceptError(QAbstractSocket::SocketError socketError)
+{
+    Q_UNUSED(socketError);
+    ui->textEditLogs->append("Serveur : " + socketEcouteServeur->errorString());
+}
+
+void AuditServeurMonoWidget::onQTcpServer_newConnection()
+{
+    if(socketDialogueClient != nullptr)
+    {
+        socketDialogueClient->close();
+        delete socketDialogueClient;
+    }
+    socketDialogueClient = socketEcouteServeur->nextPendingConnection();
+    connect(socketDialogueClient,&QTcpSocket::readyRead,this,&AuditServeurMonoWidget::onQTcpSocket_ReadyRead);
+    connect(socketDialogueClient,&QTcpSocket::connected,this,&AuditServeurMonoWidget::onQTcpSocket_Connected);
+    connect(socketDialogueClient,&QTcpSocket::disconnected,this,&AuditServeurMonoWidget::onQTcpSocket_Disconnected);    
+    connect(socketDialogueClient,&QTcpSocket::errorOccurred,this,&AuditServeurMonoWidget::onQTcpSocket_ErrorOccured);
+    connect(socketDialogueClient,&QTcpSocket::hostFound,this,&AuditServeurMonoWidget::onQTcpSocket_HostFound);
+    connect(socketDialogueClient,&QTcpSocket::stateChanged,this,&AuditServeurMonoWidget::onQTcpSocket_StateChanged);
+    connect(socketDialogueClient,&QTcpSocket::aboutToClose,this,&AuditServeurMonoWidget::onQTcpSocket_AboutToClose);
+    connect(socketDialogueClient,&QTcpSocket::bytesWritten,this,&AuditServeurMonoWidget::onQTcpSocket_BytesWritten);
+
+    QHostAddress addresseClient = socketDialogueClient->peerAddress();
+    ui->textEditLogs->append("Client : " + addresseClient.toString());
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_Connected()
+{
+    ui->textEditLogs->append("Client Connecté");
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_Disconnected()
+{
+    disconnect(socketDialogueClient,nullptr,this,nullptr);
+    socketDialogueClient->deleteLater();
+    socketDialogueClient = nullptr;
+    ui->textEditLogs->append("Client détconnecté");
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_ReadyRead()
+{
+   
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_ErrorOccured(QAbstractSocket::SocketError socketError)
+{
+    Q_UNUSED(socketError);
+    ui->textEditLogs->append("Client : " + socketDialogueClient->errorString());
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_HostFound()
+{
+    ui->textEditLogs->append("host found");
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_StateChanged(QAbstractSocket::SocketState socketState)
+{
+    switch (socketState)
+    {
+    case QAbstractSocket::UnconnectedState	: ui->textEditLogs->append("The socket is not connected.");break;
+    case QAbstractSocket::HostLookupState	:	ui->textEditLogs->append("The socket is performing a host name lookup.");break;
+    case QAbstractSocket::ConnectingState	: ui->textEditLogs->append("The socket has started establishing a connection.");break;
+    case QAbstractSocket::ConnectedState	: ui->textEditLogs->append("A connection is established.");break;
+    case QAbstractSocket::BoundState	: ui->textEditLogs->append("The socket is bound to an address and port.");break;
+    case QAbstractSocket::ClosingState	: ui->textEditLogs->append("The socket is about to close (data may still be waiting to be written).");break;
+    case QAbstractSocket::ListeningState	: ui->textEditLogs->append("For internal use only.");break;
+    }
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_AboutToClose()
+{
+    ui->textEditLogs->append("about to close");
+}
+
+void AuditServeurMonoWidget::onQTcpSocket_BytesWritten(qint64 bytes)
+{
+    ui->textEditLogs->append(QString::number(bytes) + " bytes written");
+}
+
+void AuditServeurMonoWidget::onQProcess_readyReadStandardOutput()
+{
+    QString reponse = process->readAllStandardOutput();
+    if(!reponse.isEmpty())
+        socketDialogueClient->write(reponse.toLatin1());
+}
+
+
+
+
+

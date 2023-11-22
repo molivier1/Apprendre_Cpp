@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>348</width>
+    <height>476</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QLabel" name="labelCode">
+        <property name="text">
+         <string>Entrez votre code</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditCode">
+        <property name="styleSheet">
+         <string notr="true">background-color: cyan;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="labelComboBox">
+        <property name="text">
+         <string>Choix</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Linux</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Windows</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OS X Lion</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QCheckBox" name="checkBoxWindows">
+        <property name="text">
+         <string>Windows</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxOSXLion">
+        <property name="text">
+         <string>OS X Lion</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxLinux">
+        <property name="text">
+         <string>Linux</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QRadioButton" name="radioButtonWindows">
+        <property name="text">
+         <string>Windows</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonOSXLion">
+        <property name="text">
+         <string>OS X Lion</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonLinux">
+        <property name="text">
+         <string>Linux</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QPushButton" name="pushButtonWindows">
+        <property name="text">
+         <string>Windows</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonOSXLion">
+        <property name="text">
+         <string>OS X Lion</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonLinux">
+        <property name="text">
+         <string>Linux</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>148</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonQuitter">
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string>Quitter</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="labelTextEdit">
+      <property name="text">
+       <string>évènement</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="styleSheet">
+       <string notr="true">color: purple;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>348</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuLangages">
+    <property name="title">
+     <string>Langages</string>
+    </property>
+    <widget class="QMenu" name="menuWeb">
+     <property name="title">
+      <string>Web</string>
+     </property>
+     <addaction name="actionPHP"/>
+     <addaction name="actionJavascript"/>
+    </widget>
+    <addaction name="separator"/>
+    <addaction name="actionC"/>
+    <addaction name="separator"/>
+    <addaction name="actionJava"/>
+    <addaction name="actionCpp"/>
+    <addaction name="separator"/>
+    <addaction name="menuWeb"/>
+   </widget>
+   <addaction name="menuLangages"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionC">
+   <property name="text">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="actionJava">
+   <property name="text">
+    <string>Java</string>
+   </property>
+  </action>
+  <action name="actionCpp">
+   <property name="text">
+    <string>C++</string>
+   </property>
+  </action>
+  <action name="actionPHP">
+   <property name="text">
+    <string>PHP</string>
+   </property>
+  </action>
+  <action name="actionJavascript">
+   <property name="text">
+    <string>Javascript</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButtonQuitter</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>439</x>
+     <y>160</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
