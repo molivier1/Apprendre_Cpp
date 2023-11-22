@@ -29,9 +29,9 @@ private slots:
 private:
     Ui::AuditServeurMultiWidget *ui;
 
-    QTcpSocket *socketDialogueClient;
+    QList <QTcpSocket *> listeSocketsDialogueClient;
     QTcpServer *socketEcouteServeur;
-    QProcess process;
+    QList <QProcess *> listeProcess;
 
     void onQTcpSocketConnected();
     void onQTcpSocketDisconnected();
