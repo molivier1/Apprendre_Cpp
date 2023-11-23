@@ -13,7 +13,7 @@ DialogConfigurerLiaisonGPS::DialogConfigurerLiaisonGPS(QSerialPort &_lePort, QWi
     ui->comboBoxPort->addItem("Choisissez un port");
     for(const auto &info : QSerialPortInfo::availablePorts() ) // foreach
     {
-            ui->comboBoxPort->addItem(info.portName());
+        ui->comboBoxPort->addItem(info.portName());
     }
     // Afficher toutes les vitesses dans le comboBoxVitesse
     int valComboBoxVitesse[8] = {1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200};

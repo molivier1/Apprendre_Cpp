@@ -27,6 +27,8 @@ private slots:
 
     void on_actionImporter_mesures_brutes_triggered();
 
+    void on_actionFormat_PDF_triggered();
+
 private:
 
     enum ETAT_SYSTEME       /// Résume les etats possibles du système

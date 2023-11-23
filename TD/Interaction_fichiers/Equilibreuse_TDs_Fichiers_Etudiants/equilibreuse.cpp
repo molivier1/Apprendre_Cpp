@@ -2,6 +2,7 @@
 #include "ui_equilibreuse.h"
 
 #include "dialogparametrageequilibreuse.h"
+#include "rapportmesures.h"
 
 #include <QFileInfo>
 #include <QSettings>
@@ -64,7 +65,6 @@ void Equilibreuse::on_actionImporter_mesures_brutes_triggered()
 
         ChangerEtatSysteme(RESTITUTION);
     }
-
 }
 
 void Equilibreuse::ChangerEtatSysteme(Equilibreuse::ETAT_SYSTEME etat)
@@ -185,6 +185,21 @@ void Equilibreuse::MettreAjourVitesseExperience()
     {
         qint16 vitesseExperience = experience->ObtenirVitesse();
         ui->lineEditVitesseExperience->setText(QString::number(vitesseExperience));
+    }
+}
+
+
+void Equilibreuse::on_actionFormat_PDF_triggered()
+{
+    // ouverture de la boite de dialogue
+    if(experience != nullptr)
+    {
+        QString leFichier = QFileDialog::getSaveFileName(this,"ecriture fichier pdf" "", ("fichier pdf(*.pdf)"));
+        if(!leFichier.isEmpty())
+        {
+            RapportMesures leRapport(*experience,*chartView,leFichier);
+            leRapport.ConstruireRapport();
+        }
     }
 }
 

@@ -6,6 +6,7 @@
 #include <QPointF>
 #include "constante.h"
 #include "pointdecourbe.h"
+#include "qdatetime.h"
 
 
 typedef struct{
@@ -62,7 +63,19 @@ public:
     double RechercherEffortAquatreVingtDix(QChar courbe='A');
     qint16 ObtenirVitesse();
 
-
+    QString ObtenirEtablissement() const;
+    void ModifierEtablissement(const QString &value);
+    QString ObtenirNom() const;
+    void ModifierNom(const QString &value);
+    QString ObtenirPrenom() const;
+    void ModifierPrenom(const QString &value);
+    QString ObtenirClasse() const;
+    void ModifierClasse(const QString &value);
+    QString ObtenirCommentaire() const;
+    void ModifierCommentaire(const QString &value);
+    QString ObtenirDate() const;
+    void ModifierDate(const QDate &value);
+    void ValiderConfig(bool _etat);
 
 signals:
 
@@ -70,7 +83,14 @@ private:
 
     quint16 vitesseMaxi;            /// vitesse maximale pour une consigne de 100% (en fonction des jauges)
     typePalier paliers[NB_PALIER];  /// Caractéristiques pour chaque palier (Jauge, Conditionneur, filtre)
+
     QString etablissement;          /// Nom de l'établissement où sont réalisés les expériences
+    QString nomEtudiant;            /// Nom de l'étudiant réalisant l'expérience
+    QString prenomEtudiant;         /// Prénom de l'étudiant réalisant l'expérience
+    QString classe;                 /// Classe de l'étudiant réalisant l'expérience
+    QString commentaire;            /// Commentaire de l'expérience
+    QDate date;
+    bool configExperience;       /// Vrai si l'utilisateur à bien configuré l'expérience
 
     quint32 nbEchantillons;     /// Nombre d'échantillons dans le tableau de mesures brutes
     quint16 origine;            /// Valeur du décalage à l'origine
