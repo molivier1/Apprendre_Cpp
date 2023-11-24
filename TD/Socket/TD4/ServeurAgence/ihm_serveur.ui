@@ -6,14 +6,83 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>500</width>
+    <height>400</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>400</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>IHM_Serveur</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelPort">
+       <property name="text">
+        <string>Port d'écoute</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBoxPort">
+       <property name="minimum">
+        <number>5555</number>
+       </property>
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonLancerServeur">
+       <property name="text">
+        <string>Lancer le serveur</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="textEditEtat"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonQuitter">
+     <property name="text">
+      <string>Quitter</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButtonQuitter</sender>
+   <signal>clicked()</signal>
+   <receiver>IHM_Serveur</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>148</x>
+     <y>490</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

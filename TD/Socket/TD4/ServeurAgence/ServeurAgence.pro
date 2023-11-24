@@ -13,6 +13,7 @@ SOURCES += \
     ihm_serveur.cpp
 
 HEADERS += \
+    avion.h \
     ihm_serveur.h
 
 FORMS += \
