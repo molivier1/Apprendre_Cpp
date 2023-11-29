@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ServeurMono</class>
+ <widget class="QWidget" name="ServeurMono">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>675</width>
+    <height>445</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ServeurMono</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTextEdit" name="textEditLogs"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonQuitter">
+     <property name="text">
+      <string>Quitter</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButtonQuitter</sender>
+   <signal>clicked()</signal>
+   <receiver>ServeurMono</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>368</x>
+     <y>394</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>382</x>
+     <y>728</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
