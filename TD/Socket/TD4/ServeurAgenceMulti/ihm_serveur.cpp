@@ -10,8 +10,6 @@ IHM_Serveur::IHM_Serveur(QWidget *parent)
 {
     ui->setupUi(this);
 
-    client = nullptr;
-
     genererListeVols();
 
     connect(&socketEcoute, &QTcpServer::newConnection,
@@ -30,7 +28,18 @@ void IHM_Serveur::onQTcpSocket_connected()
 
 void IHM_Serveur::onQTcpSocket_disconnected()
 {
-    ui->textEditEtat->append("onQTcpSocket_disconnected");
+    // récupérer la socket du client se déconnectant
+    QTcpSocket *client=qobject_cast<QTcpSocket *>(sender());
+    // récupérer l'index de ce client dans la liste
+    int index= getIndexClient(client);
+    // supprimer le client de la liste
+    if (index!=-1)
+    {
+        listeClients.removeAt(index);
+    }
+    // afficher un message avec l'ip et le port du client deconnecté
+    ui->textEditEtat->append("Le client " + client->peerAddress().toString() + ":" +
+                             QString::number(client->peerPort()) + " s'est déconnecté");
 }
 
 void IHM_Serveur::onQTcpSocket_readyRead()
@@ -42,6 +51,10 @@ void IHM_Serveur::onQTcpSocket_readyRead()
     QString nom;
     QString prenom;
     QString email;
+    int indexClient;
+
+    QTcpSocket *client = qobject_cast<QTcpSocket *>(sender());
+
     // Il y a au moins le champs taille d'arrive
     if (client->bytesAvailable() >= (qint64)sizeof(taille))
     {
@@ -60,7 +73,7 @@ void IHM_Serveur::onQTcpSocket_readyRead()
 
                 ui->textEditEtat->append("Réception choix d'un vol : " + QString::number(refVol));
 
-                envoyerPlaces(refVol);
+                envoyerPlaces(client, refVol);
                 break;
 
             case 'R':
@@ -74,6 +87,14 @@ void IHM_Serveur::onQTcpSocket_readyRead()
                 ui->textEditEtat->append("Réception validation : " + QString::number(refVol) + " " +
                                          QString::number(nroPlace) + " " +
                                          nom + " " + prenom + " " + email);
+
+                indexClient = getIndexClient(client);
+
+                listeClients.at(indexClient)->setReferenceVol(refVol);
+                listeClients.at(indexClient)->setNumeroPlace(nroPlace);
+                listeClients.at(indexClient)->setNom(nom);
+                listeClients.at(indexClient)->setPrenom(prenom);
+                listeClients.at(indexClient)->setEmail(email);
 
                 ajouterReservation(refVol, nroPlace, nom, prenom, email);
                 break;
@@ -89,30 +110,41 @@ void IHM_Serveur::onQTcpSocket_errorOccured(QAbstractSocket::SocketError socketE
 
 void IHM_Serveur::onQTcpSocket_newConnection()
 {
-    if(client != nullptr)
-    {
-        client->close();
-        delete client;
-    }
+    // récupération de la socket de communication du client
+    QTcpSocket *client=socketEcoute.nextPendingConnection();
 
-    client = socketEcoute.nextPendingConnection();
-
-    connect(client, &QTcpSocket::connected,
-            this, &IHM_Serveur::onQTcpSocket_connected);
-    connect(client, &QTcpSocket::disconnected,
-            this, &IHM_Serveur::onQTcpSocket_disconnected);
-    connect(client, &QTcpSocket::readyRead,
-            this, &IHM_Serveur::onQTcpSocket_readyRead);
-    connect(client, &QTcpSocket::errorOccurred,
-            this, &IHM_Serveur::onQTcpSocket_errorOccured);
-
-    QHostAddress addresseClient = client->peerAddress();
-    ui->textEditEtat->append("Client : " + addresseClient.toString());
-
-    envoyerVols();
+    // connection signal/slot pour la socket
+    connect(client,&QTcpSocket::connected,this,&IHM_Serveur::onQTcpSocket_connected);
+    connect(client,&QTcpSocket::disconnected,this,&IHM_Serveur::onQTcpSocket_disconnected);
+    connect(client,&QTcpSocket::readyRead,this,&IHM_Serveur::onQTcpSocket_readyRead);
+    connect(client,&QTcpSocket::errorOccurred,this,&IHM_Serveur::onQTcpSocket_errorOccured);
+    // création et ajout du client dans la liste des clients
+    Client *nouveauClient=new Client();
+    nouveauClient->setSockClient(client);
+    nouveauClient->setReferenceVol(lesVols.at(0)->infosVol.reference);
+    listeClients.append(nouveauClient);
+    // envoyer la listes des vols au client entrant
+    envoyerVols(client);
+    ui->textEditEtat->append("nouvelle connexion " + nouveauClient->getSockClient()->peerAddress().toString()
+                             + ":" + QString::number(nouveauClient->getSockClient()->peerPort()));
 }
 
-void IHM_Serveur::envoyerVols()
+int IHM_Serveur::getIndexClient(QTcpSocket *client)
+{
+    int cmp = 0;
+    foreach(Client *clientCourant, listeClients)
+    {
+        if (clientCourant->getSockClient() == client)
+        {
+            return cmp;
+        }
+        cmp ++;
+    }
+
+    return -1;
+}
+
+void IHM_Serveur::envoyerVols(QTcpSocket *client)
 {
     quint16 taille=0;
     QBuffer tampon;
@@ -140,7 +172,7 @@ void IHM_Serveur::envoyerVols()
     client->write(tampon.buffer());
 }
 
-void IHM_Serveur::envoyerPlaces(int ref)
+void IHM_Serveur::envoyerPlaces(QTcpSocket *client, int ref)
 {
     quint16 taille=0;
     QBuffer tampon;
@@ -173,7 +205,7 @@ void IHM_Serveur::envoyerPlaces(int ref)
 
 void IHM_Serveur::ajouterReservation(int ref, int place, QString nom, QString prenom, QString email)
 {
-    // mise à jour des places réservées
+    // mise a jour des places occupees pour le vol ref
     foreach(avion *a, lesVols)
     {
         if (a->infosVol.reference==ref)
@@ -181,8 +213,14 @@ void IHM_Serveur::ajouterReservation(int ref, int place, QString nom, QString pr
             a->siegesOccupees.append(place);
         }
     }
-    // envoyer au client les places réservées pour le vol ayant la réf "ref"
-    envoyerPlaces(ref);
+    // envoyer les places occupees à tous les clients reservant pour le vol
+    // ayant la réference "ref"
+    foreach (Client *client, listeClients) {
+        if (client->getReferenceVol()==ref)
+        {
+            envoyerPlaces(client->getSockClient(),ref);
+        }
+    }
 }
 
 void IHM_Serveur::genererListeVols()
