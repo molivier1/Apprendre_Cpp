@@ -23,6 +23,10 @@ public:
 private slots:
     void on_pushButtonNomDepartement_clicked();
 
+    void on_comboBoxRegions_currentIndexChanged(int index);
+
+    void on_comboBoxDepartements_currentIndexChanged(int index);
+
 private:
     Ui::France2018BDD *ui;
     QSqlDatabase bdd;
