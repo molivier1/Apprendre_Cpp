@@ -12,7 +12,7 @@ $(function ()
     if (window.WebSocket)
     {
         // creation de la WebSocket
-        maWebsocket = new WebSocket('ws://172.18.58.150:8888');
+        maWebsocket = new WebSocket('ws://127.0.0.1:5555');
 
         //Gestion des evenements de la WebSocket
         maWebsocket.onopen = function ()
@@ -37,6 +37,6 @@ $(function ()
     }
     $("#demande").click(function(){
         // envoyer la chaine "date" au serveur de WebSocket
-       maWebsocket.send("date");
+        maWebsocket.send("date");
     });
 });

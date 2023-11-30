@@ -1,5 +1,5 @@
-#ifndef SERVEURMONO_H
-#define SERVEURMONO_H
+#ifndef SERVEURMULTI_H
+#define SERVEURMULTI_H
 
 #include <QWidget>
 #include <QWebSocketServer>
@@ -9,19 +9,19 @@
 #include <QNetworkInterface>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class ServeurMono; }
+namespace Ui { class ServeurMulti; }
 QT_END_NAMESPACE
 
-class ServeurMono : public QWidget
+class ServeurMulti : public QWidget
 {
     Q_OBJECT
 
 public:
-    ServeurMono(QWidget *parent = nullptr);
-    ~ServeurMono();
+    ServeurMulti(QWidget *parent = nullptr);
+    ~ServeurMulti();
 
 private:
-    Ui::ServeurMono *ui;
+    Ui::ServeurMulti *ui;
     QWebSocketServer *sock;
     QWebSocket *client;
     QTimer *majDate;
@@ -30,4 +30,4 @@ private:
     void onQWebSocket_textMessageReceived(QString string);
     void onQtimer_majDate();
 };
-#endif // SERVEURMONO_H
+#endif // SERVEURMULTI_H

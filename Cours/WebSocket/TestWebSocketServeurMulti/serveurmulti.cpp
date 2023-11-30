@@ -1,9 +1,9 @@
-#include "serveurmono.h"
-#include "ui_serveurmono.h"
+#include "serveurmulti.h"
+#include "ui_serveurmulti.h"
 
-ServeurMono::ServeurMono(QWidget *parent)
+ServeurMulti::ServeurMulti(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::ServeurMono)
+    , ui(new Ui::ServeurMulti)
 {
     ui->setupUi(this);
 
@@ -28,13 +28,13 @@ ServeurMono::ServeurMono(QWidget *parent)
 
     client = nullptr;
 
-    connect(sock, &QWebSocketServer::newConnection, this, &ServeurMono::onQWebSocketServer_newConnection);
+    connect(sock, &QWebSocketServer::newConnection, this, &ServeurMulti::onQWebSocketServer_newConnection);
 
     majDate = new QTimer(this);
-    connect(majDate, &QTimer::timeout, this, &ServeurMono::onQtimer_majDate);
+    connect(majDate, &QTimer::timeout, this, &ServeurMulti::onQtimer_majDate);
 }
 
-ServeurMono::~ServeurMono()
+ServeurMulti::~ServeurMulti()
 {
     if(client != nullptr)
     {
@@ -45,7 +45,7 @@ ServeurMono::~ServeurMono()
     delete ui;
 }
 
-void ServeurMono::onQWebSocketServer_newConnection()
+void ServeurMulti::onQWebSocketServer_newConnection()
 {
     if(client != nullptr)
     {
@@ -55,13 +55,13 @@ void ServeurMono::onQWebSocketServer_newConnection()
 
     client = sock->nextPendingConnection();
 
-    connect(client, &QWebSocket::textMessageReceived, this, &ServeurMono::onQWebSocket_textMessageReceived);
+    connect(client, &QWebSocket::textMessageReceived, this, &ServeurMulti::onQWebSocket_textMessageReceived);
 
     QHostAddress addresseClient = client->peerAddress();
     ui->textEditLogs->append("Client : " + addresseClient.toString());
 }
 
-void ServeurMono::onQWebSocket_textMessageReceived(QString string)
+void ServeurMulti::onQWebSocket_textMessageReceived(QString string)
 {
     ui->textEditLogs->append(client->peerAddress().toString() + " : " + string);
 
@@ -71,7 +71,7 @@ void ServeurMono::onQWebSocket_textMessageReceived(QString string)
     }
 }
 
-void ServeurMono::onQtimer_majDate()
+void ServeurMulti::onQtimer_majDate()
 {
     if (client->isValid())
     {
