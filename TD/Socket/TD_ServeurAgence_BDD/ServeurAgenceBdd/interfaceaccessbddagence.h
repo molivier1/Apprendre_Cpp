@@ -30,6 +30,8 @@ private:
     QString nomBase;
 
     void chargerParametresBdd();
+
+    QList <int> obtenirListeDesPlacesOccupees(int refVol);
 };
 
 #endif // INTERFACEACCESSBDDAGENCE_H
