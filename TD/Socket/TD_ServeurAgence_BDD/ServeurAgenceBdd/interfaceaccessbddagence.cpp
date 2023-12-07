@@ -56,7 +56,7 @@ void InterfaceAccessBddAgence::supprimerReservation(int idResa)
 QList<avion *> InterfaceAccessBddAgence::obtenirListeDesVols()
 {
     QList<avion *>lesVols;
-    QSqlQuery requete(/* a completer */);
+    QSqlQuery requete("select reference, denomination from vols order by reference;");
     while(requete.next())
     {
         avion *a=new avion;
@@ -120,7 +120,25 @@ int InterfaceAccessBddAgence::ajouterClient(QString nom, QString prenom, QString
 
 QJsonArray InterfaceAccessBddAgence::obtenirListeReservations()
 {
-
+    QJsonArray listeResa;
+    QSqlQuery requete("SELECT reference, denomination, idResa, numeroSiege, nom, prenom, email "
+                      "FROM clients "
+                      "INNER JOIN reservations ON clients.id = reservations.idClient "
+                      "INNER JOIN vols ON reservations.referenceVol = vols.reference "
+                      "ORDER BY reference, numeroSiege;");
+    while(requete.next())
+    {
+        QJsonObject resa;
+        resa["idResa"]=requete.value("idResa").toInt();
+        resa["ref"]=requete.value("reference").toInt();
+        resa["vol"]=requete.value("denomination").toString();
+        resa["siege"]=requete.value("numeroSiege").toInt();
+        resa["nom"]=requete.value("nom").toString();
+        resa["prenom"]=requete.value("prenom").toString();
+        resa["email"]=requete.value("email").toString();
+        listeResa.append(resa);
+    }
+    return listeResa;
 }
 
 void InterfaceAccessBddAgence::chargerParametresBdd()

@@ -14,11 +14,58 @@ IHM_Serveur::IHM_Serveur(QWidget *parent)
 
     connect(&socketEcoute, &QTcpServer::newConnection,
             this, &IHM_Serveur::onQTcpSocket_newConnection);
+
+    ui->tableWidgetReservations->setColumnHidden(0,true);
+    ui->tableWidgetReservations->setColumnHidden(1,true);
 }
 
 IHM_Serveur::~IHM_Serveur()
 {
     delete ui;
+}
+
+void IHM_Serveur::diffuserPlaces(int ref)
+{
+    foreach(Client *c, listeClients)
+    {
+        if (c->getReferenceVol()==ref)
+        {
+            envoyerPlaces(c->getSockClient(),ref);
+        }
+    }
+}
+
+void IHM_Serveur::afficherReservations()
+{
+    // Vider le tableau
+    ui->tableWidgetReservations->setRowCount(0);
+    // récupérer les réservations
+    QJsonArray resas = accessBdd.obtenirListeReservations();
+    // Remplir le tableau
+    for (const QJsonValue& uneResa : resas) {
+        int ligneCourante = ui->tableWidgetReservations->rowCount();
+        ui->tableWidgetReservations->insertRow(ligneCourante);
+        // remplir les 2 première colonnes
+        ui->tableWidgetReservations->setItem(ligneCourante, 0, new
+                                             QTableWidgetItem(QString::number((uneResa.toObject())["idResa"].toInt())));
+        ui->tableWidgetReservations->setItem(ligneCourante, 1, new
+                                             QTableWidgetItem(QString::number((uneResa.toObject())["ref"].toInt())));
+        // remplir les colonnes suivantes
+        QStringList infosResa = {
+            (uneResa.toObject())["vol"].toString(),
+            QString::number((uneResa.toObject())["siege"].toInt()),
+            (uneResa.toObject())["nom"].toString(),
+            (uneResa.toObject())["prenom"].toString(),
+            (uneResa.toObject())["email"].toString()
+        };
+        for (int col = 0; col < infosResa.size(); ++col) {
+            QTableWidgetItem *item = new QTableWidgetItem(infosResa.at(col));
+            item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+            ui->tableWidgetReservations->setItem(ligneCourante, col + 2, item);
+        }
+    }
+    //ajuster la largeur des colonnes
+    ui->tableWidgetReservations->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch)
 }
 
 void IHM_Serveur::onQTcpSocket_connected()
@@ -266,11 +313,28 @@ void IHM_Serveur::on_pushButtonLancerServeur_clicked()
         ui->pushButtonLancerServeur->setEnabled(false);
         ui->spinBoxPort->setEnabled(false);
     }
+
+    afficherReservations();
 }
 
 
 void IHM_Serveur::on_tableWidgetReservations_cellDoubleClicked(int row, int column)
 {
-
+    qDebug()<<"supression de la resa "<<ui->tableWidgetReservations->item(row,0)->text();
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this,
+                                  "Confirmation",
+                                  "Êtes-vous sûr de vouloir supprimer cette reservation ?"
+                                  ,QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        // Supprimer la ligne si la réponse est Oui
+        accessBdd.supprimerReservation(ui->tableWidgetReservations->item(row,0)->text().toInt());
+        ui->tableWidgetReservations->removeRow(row);
+        // envoyer les places occupees à tous les clients reservant pour le vol
+        // ayant la référence "ref"
+        int ref=ui->tableWidgetReservations->item(row,1)->text().toInt();
+        lesVols=accessBdd.obtenirListeDesVols();
+        diffuserPlaces(ref);
+    }
 }
 

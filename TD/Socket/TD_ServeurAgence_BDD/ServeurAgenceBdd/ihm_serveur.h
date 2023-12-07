@@ -9,6 +9,8 @@
 #include "client.h"
 #include "interfaceaccessbddagence.h"
 
+#include <QMessageBox>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class IHM_Serveur; }
 QT_END_NAMESPACE

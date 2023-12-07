@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QFileInfo>
 #include <QSettings>
+#include <QJsonObject>
 
 #include "avion.h"
 
