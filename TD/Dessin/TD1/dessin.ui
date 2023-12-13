@@ -42,7 +42,7 @@
   <widget class="QPushButton" name="pushButtonTriangle">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>100</x>
      <y>490</y>
      <width>80</width>
      <height>23</height>
@@ -63,6 +63,71 @@
    </property>
    <property name="text">
     <string>Clear scene</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonCercle">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>520</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cercle</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonEllipse">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>520</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ellipse</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonEtoile">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>550</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Etoile</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonQuestion4">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>550</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Question 4</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonFlocon">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>490</y>
+     <width>161</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>FLOCON</string>
    </property>
   </widget>
  </widget>

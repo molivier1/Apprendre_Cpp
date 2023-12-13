@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Widget</class>
+ <widget class="QWidget" name="Widget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>672</width>
+    <height>482</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Widget</string>
+  </property>
+  <widget class="QGraphicsView" name="vue">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>311</width>
+     <height>211</height>
+    </rect>
+   </property>
+   <property name="sceneRect">
+    <rectf>
+     <x>0.000000000000000</x>
+     <y>0.000000000000000</y>
+     <width>300.000000000000000</width>
+     <height>200.000000000000000</height>
+    </rectf>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonLancerAnim">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>81</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Lancer Anim</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonQuitter">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>450</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Quitter</string>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="vue_2">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>10</y>
+     <width>311</width>
+     <height>211</height>
+    </rect>
+   </property>
+   <property name="sceneRect">
+    <rectf>
+     <x>0.000000000000000</x>
+     <y>0.000000000000000</y>
+     <width>300.000000000000000</width>
+     <height>200.000000000000000</height>
+    </rectf>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="vue_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>230</y>
+     <width>311</width>
+     <height>211</height>
+    </rect>
+   </property>
+   <property name="sceneRect">
+    <rectf>
+     <x>0.000000000000000</x>
+     <y>0.000000000000000</y>
+     <width>300.000000000000000</width>
+     <height>200.000000000000000</height>
+    </rectf>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="vue_4">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>230</y>
+     <width>311</width>
+     <height>211</height>
+    </rect>
+   </property>
+   <property name="sceneRect">
+    <rectf>
+     <x>0.000000000000000</x>
+     <y>0.000000000000000</y>
+     <width>300.000000000000000</width>
+     <height>200.000000000000000</height>
+    </rectf>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButtonQuitter</sender>
+   <signal>clicked()</signal>
+   <receiver>Widget</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>225</x>
+     <y>427</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>220</x>
+     <y>544</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

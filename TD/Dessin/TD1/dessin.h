@@ -29,6 +29,16 @@ private slots:
 
     void on_pushButtonClearScene_clicked();
 
+    void on_pushButtonCercle_clicked();
+
+    void on_pushButtonEllipse_clicked();
+
+    void on_pushButtonEtoile_clicked();
+
+    void on_pushButtonQuestion4_clicked();
+
+    void on_pushButtonFlocon_clicked();
+
 private:
     Ui::Dessin *ui;
 
