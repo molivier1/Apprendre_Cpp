@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Albert_Weska.jpg</file>
+        <file>WhyAreYouRunning.mp3</file>
+    </qresource>
+</RCC>
