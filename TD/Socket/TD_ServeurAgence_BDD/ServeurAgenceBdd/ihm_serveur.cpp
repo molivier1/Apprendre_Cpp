@@ -65,7 +65,7 @@ void IHM_Serveur::afficherReservations()
         }
     }
     //ajuster la largeur des colonnes
-    ui->tableWidgetReservations->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch)
+    ui->tableWidgetReservations->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 void IHM_Serveur::onQTcpSocket_connected()
@@ -144,6 +144,9 @@ void IHM_Serveur::onQTcpSocket_readyRead()
                 listeClients.at(indexClient)->setEmail(email);
 
                 ajouterReservation(refVol, nroPlace, nom, prenom, email);
+
+                envoyerPlaces(client, refVol);
+
                 break;
             }
         }
@@ -250,9 +253,9 @@ void IHM_Serveur::envoyerPlaces(QTcpSocket *client, int ref)
     client->write(tampon.buffer());
 }
 
-void IHM_Serveur::ajouterReservation(int ref, int place, QString nom, QString prenom, QString email)
+void IHM_Serveur::ajouterReservation(int ref, int nroPlace, QString nom, QString prenom, QString email)
 {
-    // mise a jour des places occupees pour le vol ref
+    /*// mise a jour des places occupees pour le vol ref
     foreach(avion *a, lesVols)
     {
         if (a->infosVol.reference==ref)
@@ -267,12 +270,32 @@ void IHM_Serveur::ajouterReservation(int ref, int place, QString nom, QString pr
         {
             envoyerPlaces(client->getSockClient(),ref);
         }
+    }*/
+
+    // recuperer l'id du client
+
+    int idClient= accessBdd.ajouterClient(nom, prenom, email);
+    if (idClient!=-1)
+    {
+        // mise a jour des places occupees pour le vol ref
+        foreach(avion *a, lesVols)
+        {
+            if (a->infosVol.reference==ref)
+            {
+                a->siegesOccupees.append(nroPlace);
+            }
+        }
+        // reserver la place pour le vol ref
+        /* a completer*/
+        accessBdd.ajouterReservation(ref, idClient, nroPlace);
+
     }
+    afficherReservations();
 }
 
 void IHM_Serveur::genererListeVols()
 {
-    avion *v1=new avion;
+    /*avion *v1=new avion;
     v1->infosVol.reference=1234;
     v1->infosVol.denomination="Paris - Londre";
     v1->siegesOccupees<<1<<2<<4<<5<<12;
@@ -289,7 +312,9 @@ void IHM_Serveur::genererListeVols()
 
     lesVols.append(v1);
     lesVols.append(v2);
-    lesVols.append(v3);
+    lesVols.append(v3);*/
+
+    lesVols = accessBdd.obtenirListeDesVols();
 }
 
 
