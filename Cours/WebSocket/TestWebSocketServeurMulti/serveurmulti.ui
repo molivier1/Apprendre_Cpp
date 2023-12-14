@@ -27,5 +27,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButtonQuitter</sender>
+   <signal>clicked()</signal>
+   <receiver>ServeurMulti</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>514</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

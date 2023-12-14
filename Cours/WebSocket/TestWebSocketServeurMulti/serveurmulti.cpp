@@ -26,8 +26,6 @@ ServeurMulti::ServeurMulti(QWidget *parent)
         ui->textEditLogs->append("N° du port : " + QString::number(sock->serverPort()));
     }
 
-    client = nullptr;
-
     connect(sock, &QWebSocketServer::newConnection, this, &ServeurMulti::onQWebSocketServer_newConnection);
 
     majDate = new QTimer(this);
@@ -36,10 +34,10 @@ ServeurMulti::ServeurMulti(QWidget *parent)
 
 ServeurMulti::~ServeurMulti()
 {
-    if(client != nullptr)
+    foreach(QWebSocket *clientCourant, listeClient)
     {
-        client->close();
-        delete client;
+        clientCourant->close();
+        delete clientCourant;
     }
     delete sock;
     delete ui;
@@ -47,22 +45,19 @@ ServeurMulti::~ServeurMulti()
 
 void ServeurMulti::onQWebSocketServer_newConnection()
 {
-    if(client != nullptr)
-    {
-        client->close();
-        delete client;
-    }
+    QWebSocket *newClient = sock->nextPendingConnection();
 
-    client = sock->nextPendingConnection();
+    connect(newClient, &QWebSocket::textMessageReceived, this, &ServeurMulti::onQWebSocket_textMessageReceived);
 
-    connect(client, &QWebSocket::textMessageReceived, this, &ServeurMulti::onQWebSocket_textMessageReceived);
-
-    QHostAddress addresseClient = client->peerAddress();
+    QHostAddress addresseClient = newClient->peerAddress();
     ui->textEditLogs->append("Client : " + addresseClient.toString());
+    listeClient.append(newClient);
 }
 
 void ServeurMulti::onQWebSocket_textMessageReceived(QString string)
 {
+    QWebSocket *client = qobject_cast<QWebSocket *>(sender());
+
     ui->textEditLogs->append(client->peerAddress().toString() + " : " + string);
 
     if(string == "date")
@@ -73,9 +68,12 @@ void ServeurMulti::onQWebSocket_textMessageReceived(QString string)
 
 void ServeurMulti::onQtimer_majDate()
 {
-    if (client->isValid())
+    ui->textEditLogs->append("Envoie : " + QDateTime::currentDateTime().toString());
+    foreach(QWebSocket *clientCourant, listeClient)
     {
-        ui->textEditLogs->append("Envoie : " + QDateTime::currentDateTime().toString());
-        client->sendTextMessage(QDateTime::currentDateTime().toString());
+        if (clientCourant->isValid())
+        {
+            clientCourant->sendTextMessage(QDateTime::currentDateTime().toString());
+        }
     }
 }

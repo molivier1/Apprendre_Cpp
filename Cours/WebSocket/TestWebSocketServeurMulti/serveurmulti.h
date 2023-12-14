@@ -23,7 +23,7 @@ public:
 private:
     Ui::ServeurMulti *ui;
     QWebSocketServer *sock;
-    QWebSocket *client;
+    QList <QWebSocket *> listeClient;
     QTimer *majDate;
 
     void onQWebSocketServer_newConnection();
