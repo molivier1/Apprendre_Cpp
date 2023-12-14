@@ -87,6 +87,25 @@ void ServeurCrawler::onQTcpSocket_readyRead()
                 newPosClient1.setX(newPosClient1.x()+1);
                 break;
             }
+            if (newPosClient1.x()<0)
+            {
+                newPosClient1.setX(1);
+            }
+
+            if (newPosClient1.x()>=TAILLE)
+            {
+                newPosClient1.setX(TAILLE-2);
+            }
+
+            if (newPosClient1.y()<0)
+            {
+                newPosClient1.setY(1);
+            }
+
+            if (newPosClient1.y()>=TAILLE)
+            {
+                newPosClient1.setY(TAILLE-2);
+            }
             //listePositions.replace(indexClient, newPos);
             if(listePositions.contains(newPosClient1))
             {
@@ -135,6 +154,7 @@ void ServeurCrawler::onQTcpSocket_disconnected()
     if (index!=-1)
     {
         listeSocketsClient.removeAt(index);
+        listePositions.removeAt(index);
     }
     // afficher un message avec l'ip et le port du client deconnecté
     qDebug() << "Le client " + client->peerAddress().toString() + ":" +
