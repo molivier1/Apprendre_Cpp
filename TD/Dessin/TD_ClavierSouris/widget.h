@@ -5,9 +5,10 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include "qgraphicsballecollisionitem.h"
+#include <QKeyEvent>
 
-#define LARGEUR 640
-#define HAUTEUR 480
+#define LARGEUR 782
+#define HAUTEUR 551
 #define NBOBSTACLES 50
 namespace Ui {
 class Widget;
@@ -20,6 +21,8 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
+
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void on_pushButtonLancerAnim_clicked();

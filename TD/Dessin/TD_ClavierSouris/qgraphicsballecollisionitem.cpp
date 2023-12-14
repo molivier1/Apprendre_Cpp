@@ -3,7 +3,11 @@
 #include <QDebug>
 #include <QtMath>
 
-QGraphicsBalleCollisionItem::QGraphicsBalleCollisionItem(qreal x, qreal y, qreal width, qreal height, QGraphicsRectItem *_raquette, QGraphicsItem *parent):QGraphicsEllipseItem (x,y,width,height,parent),raquette(_raquette),dx(2),dy(2)
+QGraphicsBalleCollisionItem::QGraphicsBalleCollisionItem(qreal x, qreal y, qreal width, qreal height, QGraphicsRectItem *_raquette, QGraphicsItem *parent)
+    :QGraphicsEllipseItem (x,y,width,height,parent),
+      raquette(_raquette),
+      dx(2),
+      dy(2)
 {
 
 }
